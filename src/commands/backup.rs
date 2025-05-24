@@ -425,7 +425,7 @@ fn publish_metrics(
         let metrics_exporter = OpentelemetryExporter {
             endpoint: otlp_endpoint.clone(),
             service_name: job_name.to_string(),
-            attributes: global_config.metrics_labels.clone(),
+            labels: global_config.metrics_labels.clone(),
         };
 
         metrics_exporter

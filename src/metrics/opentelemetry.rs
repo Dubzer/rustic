@@ -15,7 +15,7 @@ use super::{Metric, MetricValue, MetricsExporter};
 pub struct OpentelemetryExporter {
     pub endpoint: Url,
     pub service_name: String,
-    pub attributes: BTreeMap<String, String>,
+    pub labels: BTreeMap<String, String>,
 }
 
 impl MetricsExporter for OpentelemetryExporter {
@@ -32,7 +32,7 @@ impl MetricsExporter for OpentelemetryExporter {
             .build();
 
         let attributes = self
-            .attributes
+            .labels
             .iter()
             .map(|(k, v)| KeyValue::new(k.to_string(), v.to_string()));
 
