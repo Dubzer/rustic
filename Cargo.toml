@@ -132,9 +132,9 @@ jaq-core = { version = "2", optional = true }
 jaq-json = { version = "1", features = ["serde_json"], optional = true }
 jaq-std = { version = "2", optional = true }
 rhai = { version = "1", features = ["sync", "serde", "no_optimize", "no_module", "no_custom_syntax", "only_i64"], optional = true }
-opentelemetry = {version = "0.30.0", features = ["metrics"], optional = true}
-opentelemetry-otlp = {version = "0.30.0", features = ["metrics", "http-proto"], optional = true}
-opentelemetry_sdk = {version = "0.30.0", features = ["metrics"], optional = true}
+opentelemetry = {version = "0.30.0", default-features = false, features = ["metrics"], optional = true}
+opentelemetry-otlp = {version = "0.30.0", features = ["metrics"], optional = true}
+opentelemetry_sdk = {version = "0.30.0", default-features = false, features = ["metrics"], optional = true}
 
 [dev-dependencies]
 abscissa_core = { version = "0.8.1", default-features = false, features = ["testing"] }
