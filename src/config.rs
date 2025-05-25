@@ -9,6 +9,7 @@ pub(crate) mod progress_options;
 
 use std::{
     collections::BTreeMap,
+    env,
     fmt::{self, Display, Formatter},
     path::PathBuf,
 };
@@ -219,7 +220,7 @@ pub struct GlobalOptions {
 
     /// OpenTelemetry metrics endpoint (HTTP)
     #[serde_as(as = "Option<DisplayFromStr>")]
-    #[clap(long, global = true, env = "RUSTIC_OTEL", env = "OTEL_EXPORTER_OTLP_METRICS_ENDPOINT", value_name = "ENDPOINT_URL", value_hint = ValueHint::Url)]
+    #[clap(long, global = true, env = "RUSTIC_OTEL", value_name = "ENDPOINT_URL", value_hint = ValueHint::Url)]
     #[merge(strategy=conflate::option::overwrite_none)]
     pub opentelemetry: Option<Url>,
 }
