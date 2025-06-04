@@ -243,7 +243,7 @@ impl Configurable<RusticConfig> for EntryPoint {
                 _ = config.repository.be.options_cold.insert(var, value);
             } else if var == "OTEL_EXPORTER_OTLP_METRICS_ENDPOINT" {
                 if let Ok(url) = Url::parse(&value) {
-                    _ = config.global.opentelemetry.get_or_insert(url);
+                    _ = config.global.opentelemetry.insert(url);
                 }
             }
         }
