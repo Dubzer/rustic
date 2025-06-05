@@ -131,15 +131,15 @@ pub struct BackupCmd {
     #[merge(skip)]
     sources: Vec<String>,
 
-    /// Job name for the Prometheus Pushgateway push. Default: rustic-backup
-    #[clap(long, value_name = "JOB_NAME", env = "RUSTIC_PROMETHEUS_JOB")]
+    /// Job name for the metrics. Default: rustic-backup
+    #[clap(long, value_name = "JOB_NAME", env = "RUSTIC_METRICS_JOB")]
     #[merge(strategy=conflate::option::overwrite_none)]
-    prometheus_job: Option<String>,
+    pub metrics_job: Option<String>,
 
-    /// Additional labels to set to generated Prometheus metrics
+    /// Additional labels to set to generated metrics
     #[clap(long, value_name = "NAME=VALUE", value_parser = parse_labels, default_value = "")]
     #[merge(strategy=conflate::btreemap::append_or_ignore)]
-    prometheus_labels: BTreeMap<String, String>,
+    metrics_labels: BTreeMap<String, String>,
 }
 
 /// Merge backup snapshots to generate
@@ -346,10 +346,10 @@ impl BackupCmd {
         if config.global.is_metrics_configured() {
             // Merge global metrics labels
             conflate::btreemap::append_or_ignore(
-                &mut self.prometheus_labels,
+                &mut self.metrics_labels,
                 config.global.metrics_labels.clone(),
             );
-            if let Err(err) = publish_metrics(&snap, self.prometheus_job, self.prometheus_labels) {
+            if let Err(err) = publish_metrics(&snap, self.metrics_job, self.metrics_labels) {
                 warn!("error pushing metrics: {err}");
             }
         }
