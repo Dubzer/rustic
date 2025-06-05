@@ -38,10 +38,10 @@ impl MetricsExporter for OpentelemetryExporter {
 
         let meter_provider = SdkMeterProvider::builder()
             .with_reader(reader)
-            .with_resource(Resource::builder().with_attributes(attributes).build())
+            .with_resource(Resource::builder().with_service_name(self.service_name.clone()).with_attributes(attributes).build())
             .build();
 
-        let meter = meter_provider.meter(self.service_name.clone().leak());
+        let meter = meter_provider.meter("rustic");
 
         for metric in metrics {
             match metric.value {
