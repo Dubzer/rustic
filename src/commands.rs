@@ -66,7 +66,6 @@ use clap::builder::{
 use convert_case::{Case, Casing};
 use human_panic::setup_panic;
 use log::{Level, info, log};
-use opentelemetry_otlp::OTEL_EXPORTER_OTLP_METRICS_ENDPOINT;
 use reqwest::Url;
 use simplelog::{CombinedLogger, LevelFilter, TermLogger, TerminalMode, WriteLogger};
 
@@ -244,11 +243,12 @@ impl Configurable<RusticConfig> for EntryPoint {
             } else if let Some(var) = var.strip_prefix("OPENDALCOLD_") {
                 let var = var.from_case(Case::UpperSnake).to_case(Case::Snake);
                 _ = config.repository.be.options_cold.insert(var, value);
-            } else if var == OTEL_EXPORTER_OTLP_METRICS_ENDPOINT {
+            } else if var == "OTEL_EXPORTER_OTLP_METRICS_ENDPOINT" {
+                #[cfg(feature = "opentelemetry")]
                 if let Ok(url) = Url::parse(&value) {
                     _ = config.global.opentelemetry.insert(url);
                 }
-            } else if var == "OTEL_SERVICE_NAME" {
+            } else if var == "OTEL_SERVICE_NAME" && cfg!(feature = "opentelemetry") {
                 _ = config.backup.metrics_job.insert(value);
             }
         }

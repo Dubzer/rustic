@@ -366,7 +366,7 @@ fn publish_metrics(
     mut labels: BTreeMap<String, String>,
 ) -> Result<()> {
     use crate::metrics::MetricValue::*;
-    use crate::metrics::{Metric, MetricsExporter, prometheus::PrometheusExporter};
+    use crate::metrics::{Metric, MetricsExporter};
 
     let summary = snap.summary.as_ref().expect("Reaching the 'push to prometheus' point should only happen for successful backups, which must have a summary set.");
     let vec = [
@@ -405,6 +405,8 @@ fn publish_metrics(
 
     #[cfg(feature = "prometheus")]
     if let Some(prometheus_endpoint) = &global_config.prometheus {
+        use crate::metrics::prometheus::PrometheusExporter;
+
         let metrics_exporter = PrometheusExporter {
             endpoint: prometheus_endpoint.clone(),
             job_name: job_name.to_string(),

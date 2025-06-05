@@ -9,7 +9,6 @@ pub(crate) mod progress_options;
 
 use std::{
     collections::BTreeMap,
-    env,
     fmt::{self, Display, Formatter},
     path::PathBuf,
 };
