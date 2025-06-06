@@ -369,7 +369,12 @@ fn publish_metrics(
     use crate::metrics::{Metric, MetricsExporter};
 
     let summary = snap.summary.as_ref().expect("Reaching the 'push to prometheus' point should only happen for successful backups, which must have a summary set.");
-    let vec = [
+    let metrics = [
+        Metric {
+            name: "rustic_backup_time",
+            description: "Timestamp of this snapshot",
+            value: Float(snap.time.timestamp_millis() as f64 / 1000.),
+        },
         Metric {
             name: "rustic_backup_files_new",
             description: "New files compared to the last (i.e. parent) snapshot",
@@ -384,6 +389,101 @@ fn publish_metrics(
             name: "rustic_backup_files_unmodified",
             description: "Unchanged files compared to the last (i.e. parent) snapshot",
             value: Int(summary.files_unmodified),
+        },
+        Metric {
+            name: "rustic_backup_total_files_processed",
+            description: "Total processed files",
+            value: Int(summary.total_files_processed),
+        },
+        Metric {
+            name: "rustic_backup_total_bytes_processed",
+            description: "Total size of all processed files",
+            value: Int(summary.total_bytes_processed),
+        },
+        Metric {
+            name: "rustic_backup_dirs_new",
+            description: "New directories compared to the last (i.e. parent) snapshot",
+            value: Int(summary.dirs_new),
+        },
+        Metric {
+            name: "rustic_backup_dirs_changed",
+            description: "Changed directories compared to the last (i.e. parent) snapshot",
+            value: Int(summary.dirs_changed),
+        },
+        Metric {
+            name: "rustic_backup_dirs_unmodified",
+            description: "Unchanged directories compared to the last (i.e. parent) snapshot",
+            value: Int(summary.dirs_unmodified),
+        },
+        Metric {
+            name: "rustic_backup_total_dirs_processed",
+            description: "Total processed directories",
+            value: Int(summary.total_dirs_processed),
+        },
+        Metric {
+            name: "rustic_backup_total_dirsize_processed",
+            description: "Total size of all processed dirs",
+            value: Int(summary.total_dirsize_processed),
+        },
+        Metric {
+            name: "rustic_backup_data_blobs",
+            description: "Total number of data blobs added by this snapshot",
+            value: Int(summary.data_blobs),
+        },
+        Metric {
+            name: "rustic_backup_tree_blobs",
+            description: "Total number of tree blobs added by this snapshot",
+            value: Int(summary.tree_blobs),
+        },
+        Metric {
+            name: "rustic_backup_data_added",
+            description: "Total uncompressed bytes added by this snapshot",
+            value: Int(summary.data_added),
+        },
+        Metric {
+            name: "rustic_backup_data_added_packed",
+            description: "Total bytes added to the repository by this snapshot",
+            value: Int(summary.data_added_packed),
+        },
+        Metric {
+            name: "rustic_backup_data_added_files",
+            description: "Total uncompressed bytes (new/changed files) added by this snapshot",
+            value: Int(summary.data_added_files),
+        },
+        Metric {
+            name: "rustic_backup_data_added_files_packed",
+            description: "Total bytes for new/changed files added to the repository by this snapshot",
+            value: Int(summary.data_added_files_packed),
+        },
+        Metric {
+            name: "rustic_backup_data_added_trees",
+            description: "Total uncompressed bytes (new/changed directories) added by this snapshot",
+            value: Int(summary.data_added_trees),
+        },
+        Metric {
+            name: "rustic_backup_data_added_trees_packed",
+            description: "Total bytes (new/changed directories) added to the repository by this snapshot",
+            value: Int(summary.data_added_trees_packed),
+        },
+        Metric {
+            name: "rustic_backup_backup_start",
+            description: "Start time of the backup. This may differ from the snapshot `time`.",
+            value: Float(summary.backup_start.timestamp_millis() as f64 / 1000.),
+        },
+        Metric {
+            name: "rustic_backup_backup_end",
+            description: "The time that the backup has been finished.",
+            value: Float(summary.backup_end.timestamp_millis() as f64 / 1000.),
+        },
+        Metric {
+            name: "rustic_backup_backup_duration",
+            description: "Total duration of the backup in seconds, i.e. the time between `backup_start` and `backup_end`",
+            value: Float(summary.backup_duration),
+        },
+        Metric {
+            name: "rustic_backup_total_duration",
+            description: "Total duration that the rustic command ran in seconds",
+            value: Float(summary.total_duration),
         },
     ];
 
@@ -416,7 +516,7 @@ fn publish_metrics(
         };
 
         metrics_exporter
-            .push_metrics(vec.as_slice())
+            .push_metrics(metrics.as_slice())
             .context("pushing prometheus metrics")?;
     }
 
@@ -431,7 +531,7 @@ fn publish_metrics(
         };
 
         metrics_exporter
-            .push_metrics(vec.as_slice())
+            .push_metrics(metrics.as_slice())
             .context("pushing opentelemetry metrics")?;
     }
 
