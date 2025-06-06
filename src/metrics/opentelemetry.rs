@@ -34,11 +34,16 @@ impl MetricsExporter for OpentelemetryExporter {
         let attributes = self
             .labels
             .iter()
-            .map(|(k, v)| KeyValue::new(k.to_string(), v.to_string()));
+            .map(|(k, v)| KeyValue::new(k.clone(), v.clone()));
+
+        let resource = Resource::builder()
+            .with_service_name(self.service_name.clone())
+            .with_attributes(attributes)
+            .build();
 
         let meter_provider = SdkMeterProvider::builder()
             .with_reader(reader)
-            .with_resource(Resource::builder().with_service_name(self.service_name.clone()).with_attributes(attributes).build())
+            .with_resource(resource)
             .build();
 
         let meter = meter_provider.meter("rustic");

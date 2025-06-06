@@ -21,12 +21,6 @@ impl MetricsExporter for PrometheusExporter {
         use prometheus::{Encoder, ProtobufEncoder};
         use reqwest::{StatusCode, blocking::Client, header::CONTENT_TYPE};
 
-        // TODO: move to the caller
-        // only move on if a prometheus push url is given
-        /*let Some(url) = &self.prometheus else {
-            return Ok(());
-        };*/
-
         for metric in metrics {
             let gauge = register_gauge!(metric.name, metric.description,)
                 .context("registering prometheus gauge")?;

@@ -222,7 +222,7 @@ impl Configurable<RusticConfig> for EntryPoint {
         let mut config = self.config.clone();
 
         // collect "RUSTIC_REPO_OPT*" and "OPENDAL*" env variables.
-        // also add the standardized OTEL variables manually 
+        // also add the standardized OTEL variables manually
         // since clap does not support multiple variables for a single arg
         for (var, value) in std::env::vars() {
             if let Some(var) = var.strip_prefix("RUSTIC_REPO_OPT_") {
