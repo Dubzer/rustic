@@ -217,7 +217,7 @@ pub struct GlobalOptions {
     #[merge(strategy=conflate::btreemap::append_or_ignore)]
     pub metrics_labels: BTreeMap<String, String>,
 
-    /// OpenTelemetry metrics endpoint (HTTP)
+    /// OpenTelemetry metrics endpoint (HTTP Protobuf)
     #[serde_as(as = "Option<DisplayFromStr>")]
     #[clap(long, global = true, env = "RUSTIC_OTEL", value_name = "ENDPOINT_URL", value_hint = ValueHint::Url)]
     #[merge(strategy=conflate::option::overwrite_none)]
